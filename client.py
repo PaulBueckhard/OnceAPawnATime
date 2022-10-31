@@ -11,4 +11,14 @@ async def listen():
             msg = await ws.recv()
             print(msg)
 
+            x = json.loads(msg)
+
+            if "verify-attendee-request" in msg and x["code"] == "1234":
+                clientId = x["clientId"]
+                await ws.send(json.dumps({"type": "accept-attendee-request", "clientId": clientId}))
+
+            elif "verify-attendee-request" in msg and x["code"] != "1234":
+                clientId = x["clientId"]
+                await ws.send(json.dumps({"type": "decline-attendee-request", "clientId": clientId}))
+
 asyncio.get_event_loop().run_until_complete(listen())
