@@ -7,6 +7,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-l", "--local", default=False, action=argparse.BooleanOptionalAction, help="Use local server")
+parser.add_argument("--override-code", help="Override authentication code")
 
 
 async def listen():
@@ -24,7 +25,8 @@ async def listen():
 
             string = json.loads(msg)
 
-            if string["type"] == "verify-attendee-request" and string["code"] == str(code):
+            if string["type"] == "verify-attendee-request" and \
+                    (string["code"] == str(code) or string["code"] == parser.parse_args().override_code):
                 clientId = string["clientId"]
                 await ws.send(json.dumps({"type": "accept-attendee-request", "clientId": clientId}))
 
