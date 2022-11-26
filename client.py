@@ -3,13 +3,18 @@ import asyncio
 import json
 import random
 from pprint import pprint
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-l", "--local", default=False, action=argparse.BooleanOptionalAction, help="Use local server")
+
 
 async def listen():
-    url = "wss://api.pawn-hub.de/"
+    url = "wss://api.pawn-hub.de/" if not parser.parse_args().local else "ws://localhost:3000"
 
     async with websockets.connect(url) as ws:
         await ws.send(json.dumps({"type": "connect-host"}))
-        
+
         code = random.randint(1001, 9999)
         print(code)
 
@@ -27,7 +32,7 @@ async def listen():
                 await ws.send(json.dumps({"type": "get-board"}))
                 msg = await ws.recv()
                 string = json.loads(msg)
-                
+
                 if "fen" in msg:
                     fen = string["fen"]
 
@@ -39,23 +44,22 @@ async def listen():
                             if c == ' ':
                                 break
                             elif c in '12345678':
-                                brow.extend( ['--'] * int(c) )
+                                brow.extend(['--'] * int(c))
                             elif c == 'p':
-                                brow.append( 'bp' )
+                                brow.append('bp')
                             elif c == 'P':
-                                brow.append( 'wp' )
+                                brow.append('wp')
                             elif c > 'Z':
-                                brow.append( 'b'+c.upper() )
+                                brow.append('b' + c.upper())
                             else:
-                                brow.append( 'w'+c )
+                                brow.append('w' + c)
 
-                        board.append( brow )
+                        board.append(brow)
                     return board
-                pprint( fen_to_board(fen) )
+
+                pprint(fen_to_board(fen))
 
 
-            
-            
 asyncio.get_event_loop().run_until_complete(listen())
 
 ## await ws.send(json.dumps({"type": "get-board"}))
