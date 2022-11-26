@@ -10,7 +10,7 @@ parser.add_argument("-l", "--local", default=False, action=argparse.BooleanOptio
 
 
 async def listen():
-    url = "wss://api.pawn-hub.de/" if not parser.parse_args().local else "ws://localhost:3000"
+    url = "wss://api.pawn-hub.de/" if not parser.parse_args().local else "ws://127.0.0.1:3000"
 
     async with websockets.connect(url) as ws:
         await ws.send(json.dumps({"type": "connect-host"}))
