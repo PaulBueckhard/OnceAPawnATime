@@ -11,19 +11,20 @@ parser.add_argument("--override-code", help="Override authentication code")
 
 
 async def listen():
-    url = "wss://api.pawn-hub.de/" if not parser.parse_args().local else "ws://127.0.0.1:3000"
+    url = "wss://api.pawn-hub.de/host" if not parser.parse_args().local else "ws://127.0.0.1:3000/host"
 
     async with websockets.connect(url) as ws:
-        await ws.send(json.dumps({"type": "connect-host"}))
-
         code = random.randint(1001, 9999)
-        print(code)
+        print("Code: " + str(code))
 
         while True:
             msg = await ws.recv()
             print(msg)
 
             string = json.loads(msg)
+
+            if string["type"] == "connected":
+                print("Id: ", string["id"])
 
             if string["type"] == "verify-attendee-request" and \
                     (string["code"] == str(code) or string["code"] == parser.parse_args().override_code):
