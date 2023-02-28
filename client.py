@@ -4,6 +4,7 @@ import json
 import random
 from pprint import pprint
 import argparse
+import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-l", "--local", default=False, action=argparse.BooleanOptionalAction, help="Use local server")
@@ -25,11 +26,16 @@ async def listen():
 
             if string["type"] == "connected":
                 print("Id: ", string["id"])
+                id = string["id"]
+                print("Your connection link: " + "https://pawn-hub.de/play/" + str(id) + "-" + str(code))
 
-            if string["type"] == "verify-attendee-request" and \
-                    (string["code"] == str(code) or string["code"] == parser.parse_args().override_code):
+            if string["type"] == "verify-attendee-request" and (string["code"] == str(code) or string["code"] == parser.parse_args().override_code):
                 clientId = string["clientId"]
                 await ws.send(json.dumps({"type": "accept-attendee-request", "clientId": clientId}))
+
+            if string["type"] == "opponent-disconnected":
+                print("Opponent left the game.")
+                sys.exit()
 
             if (string["type"] == "matched" and string["fen"] in msg) or (string["type"] == "receive-move"):
                 await ws.send(json.dumps({"type": "get-board"}))
@@ -66,3 +72,4 @@ async def listen():
 asyncio.get_event_loop().run_until_complete(listen())
 
 ## await ws.send(json.dumps({"type": "get-board"}))
+## https://pawn-hub.de/play/0087-5569
