@@ -3,9 +3,9 @@ class ChessPiece:
         self.x = x
         self.y = y
     
-    def coordinate_converter(string):
+    def coordinate_converter(move_coordinate):
         coordinates = []
-        coordinates[:0] = string
+        coordinates[:0] = move_coordinate
 
         for i in range(len(coordinates)):
             if coordinates[i] == "A":
