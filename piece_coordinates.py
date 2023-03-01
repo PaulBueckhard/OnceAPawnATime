@@ -31,6 +31,8 @@ class ChessPiece:
 
             elif coordinates[i] == "H":
                 coordinates[i] = 8
+
+        coordinates = [int(x) for x in coordinates]
         
         return coordinates
 
