@@ -1,11 +1,14 @@
 class ChessPiece:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, from_x, from_y, to_x, to_y, difference):
+        self.from_x = from_x
+        self.from_y = from_y
+        self.to_x = to_x
+        self.to_y = to_y
+        self.difference = difference
     
-    def coordinate_converter(move_coordinate):
+    def coordinate_converter(self, from_pos, to_pos):
         coordinates = []
-        coordinates[:0] = move_coordinate
+        coordinates[:0] = from_pos + to_pos
 
         for i in range(len(coordinates)):
             if coordinates[i] == "A":
@@ -34,10 +37,12 @@ class ChessPiece:
 
         coordinates = [int(x) for x in coordinates]
         
-        return coordinates
+        self.from_x = coordinates[0]
+        self.from_y = coordinates[1]
+        self.to_x = coordinates[2]
+        self.to_y = coordinates[3]
 
-
-str1 = "B1"
-str2 = "C3"
-print(ChessPiece.coordinate_converter(str1))
-print(ChessPiece.coordinate_converter(str2))
+    def calculate_difference(self):
+        dif_x = self.to_x - self.from_x
+        dif_y = self.to_y - self.from_y
+        self.difference = [dif_x, dif_y]

@@ -6,6 +6,8 @@ import argparse
 import sys
 from pprint import pprint
 
+from piece_coordinates import ChessPiece
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-l", "--local", default=False, action=argparse.BooleanOptionalAction, help="Use local server")
 parser.add_argument("--override-code", help="Override authentication code")
@@ -44,6 +46,13 @@ async def listen():
             if server_res["type"] == "opponent-disconnected":
                 print("Opponent has left the game.")
                 sys.exit()
+
+
+            ## Take in coordinate changes
+            if server_res["type"] == "receive-move":
+                ChessPiece.coordinate_converter(ChessPiece, server_res["from"], server_res["to"])
+                ChessPiece.calculate_difference(ChessPiece)
+                print(ChessPiece.difference) ## HERE GOES CODE THAT MOVES THE ROBOT
 
 
             ## Visualise moves in console
