@@ -55,6 +55,11 @@ async def listen():
                 print(ChessPiece.difference) ## HERE GOES CODE THAT MOVES THE ROBOT
 
 
+            ## Make a move TEST
+            if server_res["type"] == "receive-move":
+                await ws.send(json.dumps({"type": "send-move", "from": "B8", "to": "C6"}))
+
+
             ## Visualise moves in console
             if (server_res["type"] == "matched" and server_res["fen"] in client_msg) or (server_res["type"] == "receive-move"):
                 await ws.send(json.dumps({"type": "get-board"}))
