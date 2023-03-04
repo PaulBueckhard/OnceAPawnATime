@@ -19,12 +19,12 @@ async def listen():
     async with websockets.connect(url) as ws:
         while True:
             client_msg = await ws.recv()
-            ## print(client_msg)
+            # print(client_msg)
 
             server_res = json.loads(client_msg)
 
 
-            ## Connect to server
+            # Connect to server
             if server_res["type"] == "connected":
                 connection_id = server_res["id"]
 
@@ -33,7 +33,7 @@ async def listen():
                         "\nYour connection link: " + "https://pawn-hub.de/play/" + str(connection_id) + "-" + str(connection_code))
             
 
-            ## Verify or decline attendee request
+            # Verify or decline attendee request
             if server_res["type"] == "verify-attendee-request" and (server_res["code"] == str(connection_code) or server_res["code"] == parser.parse_args().override_code):
                 clientId = server_res["clientId"]
                 await ws.send(json.dumps({"type": "accept-attendee-request", "clientId": clientId}))
@@ -42,25 +42,26 @@ async def listen():
                 await ws.send(json.dumps({"type": "decline-attendee-request", "clientId": clientId}))
 
 
-            ## Exit when opponent leaves game
+            # Exit when opponent leaves game
             if server_res["type"] == "opponent-disconnected":
                 print("Opponent has left the game.")
                 sys.exit()
 
 
-            ## Take in coordinate changes
+            # Take in coordinate changes
             if server_res["type"] == "receive-move":
-                ChessPiece.coordinate_converter(ChessPiece, server_res["from"], server_res["to"])
+                ChessPiece.coordinate_converter_robot(ChessPiece, server_res["from"], server_res["to"])
                 ChessPiece.calculate_difference(ChessPiece)
-                print(ChessPiece.difference) ## HERE GOES CODE THAT MOVES THE ROBOT
+                print(ChessPiece.difference) # TODO: HERE GOES CODE THAT MOVES THE ROBOT
 
 
-            ## Make a move TEST
+            # Play against AI
             if server_res["type"] == "receive-move":
-                await ws.send(json.dumps({"type": "send-move", "from": "B8", "to": "C6"}))
+                ChessPiece.coordinate_converter_ai(ChessPiece, server_res["from"], server_res["to"])
+                print(ChessPiece.player_move)
 
 
-            ## Visualise moves in console
+            # Visualise moves in console
             if (server_res["type"] == "matched" and server_res["fen"] in client_msg) or (server_res["type"] == "receive-move"):
                 await ws.send(json.dumps({"type": "get-board"}))
 
@@ -90,3 +91,5 @@ async def listen():
                 pprint(fen_visualiser(fen))
 
 asyncio.get_event_loop().run_until_complete(listen())
+
+# await ws.send(json.dumps({"type": "send-move", "from": "B8", "to": "C6"}))
