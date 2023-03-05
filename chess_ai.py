@@ -3,7 +3,6 @@ import random
 
 class ChessAI:
 
-    # A simple evaluation function that counts the total value of each player's pieces on the board
     def evaluate_board(board):
         piece_values = {"P": 1, "N": 3, "B": 3, "R": 5, "Q": 9, "K": 0}
         score = 0
@@ -17,7 +16,6 @@ class ChessAI:
                     score -= value
         return score
 
-    # A simple minimax algorithm with alpha-beta pruning
     def minimax(board, depth, alpha, beta, maximizing_player):
         if depth == 0 or board.is_game_over():
             return ChessAI.evaluate_board(board)
@@ -45,36 +43,6 @@ class ChessAI:
                     break
             return min_eval
 
-    # A function that chooses a random legal move
     def random_move(board):
         legal_moves = list(board.legal_moves)
         return random.choice(legal_moves)
-
-    # The main function that plays a game between the AI and a human player
-    def play_game(move_string):
-        board = chess.Board()
-        while not board.is_game_over():
-            if board.turn == chess.BLACK:
-                # The AI plays as the white player
-                move = None
-                max_eval = float('-inf')
-                for possible_move in board.legal_moves:
-                    board.push(possible_move)
-                    eval = ChessAI.minimax(board, 3, float('-inf'), float('inf'), False)
-                    board.pop()
-                    if eval > max_eval:
-                        max_eval = eval
-                        move = possible_move
-                board.push(move)
-                print(f"AI played {move}")
-            else:
-                # The human player plays as the black player
-                move = None
-                while move not in board.legal_moves:
-                    move_string = input("Enter your move (in algebraic notation): ")
-                    move = chess.Move.from_uci(move_string)
-                board.push(move)
-            print(board)
-
-# Play a game
-ChessAI.play_game()

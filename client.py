@@ -4,13 +4,20 @@ import json
 import random
 import argparse
 import sys
+import chess
+import random
 from pprint import pprint
 
 from piece_coordinates import ChessPiece
+from chess_ai import ChessAI
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-l", "--local", default=False, action=argparse.BooleanOptionalAction, help="Use local server")
 parser.add_argument("--override-code", help="Override authentication code")
+
+play_against_ai = input("Do you want to play against the AI? ")
+board = chess.Board()
+visualise_board = input("Do you want a board visualisation in the console? ")
 
 async def listen():
     url = "wss://api.pawn-hub.de/host" if not parser.parse_args().local else "ws://127.0.0.1:3000/host"
@@ -52,44 +59,65 @@ async def listen():
             if server_res["type"] == "receive-move":
                 ChessPiece.coordinate_converter_robot(ChessPiece, server_res["from"], server_res["to"])
                 ChessPiece.calculate_difference(ChessPiece)
-                print(ChessPiece.difference) # TODO: HERE GOES CODE THAT MOVES THE ROBOT
+                # TODO: HERE GOES CODE THAT MOVES THE ROBOT
 
 
-            # Play against AI
-            if server_res["type"] == "receive-move":
-                ChessPiece.coordinate_converter_ai(ChessPiece, server_res["from"], server_res["to"])
-                print(ChessPiece.player_move)
+            # Play against AI on website
+            while play_against_ai == "yes":
+                if server_res["type"] == "receive-move":
+                    ChessPiece.coordinate_converter_ai(ChessPiece, server_res["from"], server_res["to"])
+                    player_move = ChessPiece.player_move
+                    
+                    move = None
+                    while move not in board.legal_moves:
+                        move = chess.Move.from_uci(player_move)
+                    board.push(move)
+
+                    move = None
+                    max_eval = float('-inf')
+                    for possible_move in board.legal_moves:
+                        board.push(possible_move)
+                        eval = ChessAI.minimax(board, 3, float('-inf'), float('inf'), False)
+                        board.pop()
+                        if eval > max_eval:
+                            max_eval = eval
+                            move = possible_move
+                    board.push(move)
+                    ChessPiece.coordinate_converter_webserver(ChessPiece, move)
+                    await ws.send(json.dumps({"type": "send-move", "from": ChessPiece.ai_from, "to": ChessPiece.ai_to}))
+
+                break
 
 
             # Visualise moves in console
-            if (server_res["type"] == "matched" and server_res["fen"] in client_msg) or (server_res["type"] == "receive-move"):
-                await ws.send(json.dumps({"type": "get-board"}))
+            while visualise_board == "yes":
+                if (server_res["type"] == "matched" and server_res["fen"] in client_msg) or (server_res["type"] == "receive-move"):
+                    await ws.send(json.dumps({"type": "get-board"}))
 
-                fen = server_res["fen"]
+                    fen = server_res["fen"]
 
-                def fen_visualiser(fen):
-                    board = []
-                    for row in fen.split('/'):
-                        brow = []
-                        for c in row:
-                            if c == ' ':
-                                break
-                            elif c in '12345678':
-                                brow.extend(['--'] * int(c))
-                            elif c == 'p':
-                                brow.append('bp')
-                            elif c == 'P':
-                                brow.append('wp')
-                            elif c > 'Z':
-                                brow.append('b' + c.upper())
-                            else:
-                                brow.append('w' + c)
+                    def fen_visualiser(fen):
+                        board = []
+                        for row in fen.split('/'):
+                            brow = []
+                            for c in row:
+                                if c == ' ':
+                                    break
+                                elif c in '12345678':
+                                    brow.extend(['--'] * int(c))
+                                elif c == 'p':
+                                    brow.append('bp')
+                                elif c == 'P':
+                                    brow.append('wp')
+                                elif c > 'Z':
+                                    brow.append('b' + c.upper())
+                                else:
+                                    brow.append('w' + c)
 
-                        board.append(brow)
-                    return board
+                            board.append(brow)
+                        return board
 
-                pprint(fen_visualiser(fen))
+                    pprint(fen_visualiser(fen))
+                break
 
 asyncio.get_event_loop().run_until_complete(listen())
-
-# await ws.send(json.dumps({"type": "send-move", "from": "B8", "to": "C6"}))

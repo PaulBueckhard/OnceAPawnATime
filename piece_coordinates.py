@@ -1,11 +1,18 @@
 class ChessPiece:
-    def __init__(self, from_x, from_y, to_x, to_y, difference, player_move):
+    def __init__(self, from_x, from_y, to_x, to_y, difference, player_move, ai_move, ai_from, ai_to):
         self.from_x = from_x
         self.from_y = from_y
+
         self.to_x = to_x
         self.to_y = to_y
+
         self.difference = difference
+
         self.player_move = player_move
+
+        self.ai_move = ai_move
+        self.ai_from = ai_from
+        self.ai_to = ai_to
     
     def coordinate_converter_robot(self, from_pos, to_pos):
         coordinates = []
@@ -47,10 +54,15 @@ class ChessPiece:
         self.player_move = from_pos + to_pos
         self.player_move = self.player_move.lower()
         return self.player_move
+    
+    def coordinate_converter_webserver(self, ai_move):
+        ai_move = str(ai_move)
+        ai_move = ai_move.upper()
+        ai_from, ai_to = ai_move[:len(ai_move)//2], ai_move[len(ai_move)//2:]
+        self.ai_from = ai_from
+        self.ai_to = ai_to
 
     def calculate_difference(self):
         dif_x = self.to_x - self.from_x
         dif_y = self.to_y - self.from_y
         self.difference = [dif_x, dif_y]
-
-print(ChessPiece.coordinate_converter_ai(ChessPiece, "B1", "C3"))
