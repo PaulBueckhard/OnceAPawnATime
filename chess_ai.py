@@ -10,7 +10,7 @@ class ChessAI:
             piece = board.piece_at(square)
             if piece is not None:
                 value = piece_values[piece.symbol().upper()]
-                if piece.color == chess.WHITE:
+                if piece.color == chess.BLACK:
                     score += value
                 else:
                     score -= value
