@@ -63,7 +63,7 @@ async def listen():
 
 
             # Play against AI on website
-            while play_against_ai == "yes":
+            while play_against_ai.lower() == "yes" or "y":
                 if server_res["type"] == "receive-move":
                     ChessPiece.coordinate_converter_ai(ChessPiece, server_res["from"], server_res["to"])
                     player_move = ChessPiece.player_move
@@ -90,7 +90,7 @@ async def listen():
 
 
             # Visualise moves in console
-            while visualise_board == "yes":
+            while visualise_board.lower() == "yes" or "y":
                 if (server_res["type"] == "matched" and server_res["fen"] in client_msg) or (server_res["type"] == "receive-move"):
                     await ws.send(json.dumps({"type": "get-board"}))
 
