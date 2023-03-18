@@ -118,6 +118,7 @@ async def listen():
                         return board
 
                     pprint(fen_visualiser(fen))
+                    print("")
                 break
 
 asyncio.get_event_loop().run_until_complete(listen())
