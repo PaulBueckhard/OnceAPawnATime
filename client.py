@@ -55,7 +55,7 @@ async def listen():
                 sys.exit()
 
 
-            # Take in coordinate changes
+            # Mirror move on physical board
             if server_res["type"] == "receive-move":
                 ChessPiece.coordinate_converter_robot(ChessPiece, server_res["from"], server_res["to"])
                 ChessPiece.calculate_difference(ChessPiece)
@@ -63,7 +63,7 @@ async def listen():
 
 
             # Play against AI on website
-            while play_against_ai.lower() == "yes" or "y":
+            if play_against_ai.lower() == "yes" or play_against_ai.lower() == "y":
                 if server_res["type"] == "receive-move":
                     ChessPiece.coordinate_converter_ai(ChessPiece, server_res["from"], server_res["to"])
                     player_move = ChessPiece.player_move
@@ -86,11 +86,9 @@ async def listen():
                     ChessPiece.coordinate_converter_webserver(ChessPiece, move)
                     await ws.send(json.dumps({"type": "send-move", "from": ChessPiece.ai_from, "to": ChessPiece.ai_to}))
 
-                break
-
 
             # Visualise moves in console
-            while visualise_board.lower() == "yes" or "y":
+            if visualise_board.lower() == "yes" or visualise_board.lower() == "y":
                 if (server_res["type"] == "matched" and server_res["fen"] in client_msg) or (server_res["type"] == "receive-move"):
                     await ws.send(json.dumps({"type": "get-board"}))
 
@@ -119,6 +117,5 @@ async def listen():
 
                     pprint(fen_visualiser(fen))
                     print("")
-                break
 
 asyncio.get_event_loop().run_until_complete(listen())
