@@ -15,7 +15,7 @@ GPIO.setup(STEP, GPIO.OUT)
 GPIO.setup(DIR, GPIO.OUT)
 GPIO.setup(EN, GPIO.OUT)
 
-steps = 5000 # number of steps
+steps = 200 # number of steps
 usDelay = 950 # number of microseconds
 uS = 0.000001 # one microsecond
 GPIO.output(EN, GPIO.LOW)
