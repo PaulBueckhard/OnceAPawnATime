@@ -1,5 +1,5 @@
 How to run the board client:
-1. Make sure you pip installed the requirements (pip install requirements.txt)
+1. Make sure you pip installed the requirements (`$ pip install -r requirements.txt`)
 2. Run client.py
 3. answer with yes/any whether you want to play against AI
 4. answer with yes/any whether you want board visualisation
@@ -12,4 +12,7 @@ To end the program simply leave the game on the website or press ctrl+c in the t
 
 `stepper_motor_test.py` is a script that makes the motor move back and forth a predetermined amount until indefinitely until interrupted.
 
-`move-motor.py` contains functions that move the motor with parameters given on call.
+`motor_move.py` contains functions that move the motor with parameters given on call.
+
+If motor is moved `enable` pin needs to be set to HIGH after the movement is finished `GPIO.output(EN, GPIO.HIGH)`. This is especially important if the function is interrupted.
+We don't yet have the endstops implemented, so it's safest to only run the motor through funcitons that have a keyboard interrupt.

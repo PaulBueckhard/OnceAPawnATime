@@ -1,7 +1,9 @@
 from time import sleep
 import RPi.GPIO as GPIO
+from motor import Motor
+from motor import Units
 
-GPIO.setmode(GPIO.BCM)
+""" GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 
@@ -12,39 +14,31 @@ EN = 23 # Enable pin
 
 GPIO.setup(STEP, GPIO.OUT)
 GPIO.setup(DIR, GPIO.OUT)
-GPIO.setup(EN, GPIO.OUT)
+GPIO.setup(EN, GPIO.OUT) """
 
-# 2400 steps makes about 46.5 cm linear distance
+""" # 2400 steps makes about 46.5 cm linear distance (5.1613 steps/mm)
 MIN_US_DELAY = 950 # Minimum required delay between steps
-steps = 2000 # number of steps
 usDelay = 950 # number of microseconds
 uS = 0.000001 # one microsecond
-
-
-# makes motor move number of steps given, clockwise if direction is "cw", counterclockwise if anything else, at speed of delay
-def motor_step(steps, direction, delay=MIN_US_DELAY):
-    GPIO.output(EN, GPIO.LOW)
-
-    GPIO.output(DIR, GPIO.HIGH if (direction == "cw") else GPIO.LOW)
-    for i in range(steps):
-        GPIO.output(STEP, GPIO.HIGH)
-        sleep(uS * delay)
-        GPIO.output(STEP, GPIO.LOW)
-        sleep(uS * delay)
-    
-    GPIO.output(EN, GPIO.HIGH)
-
+spmm = 5.1613 # steps/mm
+fieldLength = 58 # width and length of a field on the board in mm
+# clockwise movement on motor_x is X positive
+# counterclockwise movement on motor_x is X negative """
+steps = 2000 # Nr of steps
+reps = 3 # Nr of times to repeat script 
+units = Units()
 #
 print("[press ctrl+c to end the script]")
 
 try: # Main program loop
-    for i in range(3):
-        motor_step(steps, "cw", usDelay)
+    motorX = Motor('motor_x')
+    for i in range(reps):
+        motorX.step(steps, 'cw', units.usDelay)
         sleep(1)
-        motor_step(steps, "ccw", usDelay)
+        motorX.step(steps, 'ccw', units.usDelay)
         sleep(1)
-    #motor_step(2400, "ccw", usDelay)
+    #motorX.step(2400, 'ccw', units.usDelay)
 
 # Scavenging work after the end of the program
 except KeyboardInterrupt:
-    GPIO.output(EN, GPIO.HIGH)
+    GPIO.output(motorX.pins.EN, GPIO.HIGH)
