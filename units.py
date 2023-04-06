@@ -7,3 +7,4 @@ class Units:
     fieldLength = 58 # width and length of a field on the board in mm
     # clockwise movement on motor_x is X positive
     # counterclockwise movement on motor_x is X negative
+    fieldSteps = 299 # One fieldlength in steps

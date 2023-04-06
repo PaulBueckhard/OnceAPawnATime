@@ -46,14 +46,13 @@ def move_motor_back_and_forth(steps, reps, units):
 def move_motor_on_board(dif_x, dif_y, units):
     try: 
         motorX = Motor('motor_x')
-        one_field = 299 # One chess field in steps
 
         if dif_x > 0:
             for i in range(dif_x):
-                motorX.step(one_field, 'cw', units.usDelay)
+                motorX.step(units.fieldSteps, 'cw', units.usDelay)
         elif dif_x < 0:
             for i in range(dif_x):
-                motorX.step(one_field, 'ccw', units.usDelay)
+                motorX.step(units.fieldSteps, 'ccw', units.usDelay)
 
     except KeyboardInterrupt:
         GPIO.output(motorX.pins.EN, GPIO.HIGH)
