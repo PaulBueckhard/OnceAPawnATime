@@ -89,33 +89,10 @@ async def listen():
 
             # Visualise moves in console
             if visualise_board.lower() == "yes" or visualise_board.lower() == "y":
-                if (server_res["type"] == "matched" and server_res["fen"] in client_msg) or (server_res["type"] == "receive-move"):
+                if (server_res["type"] == "matched") or (server_res["type"] == "receive-move"):
                     await ws.send(json.dumps({"type": "get-board"}))
-
                     fen = server_res["fen"]
-
-                    def fen_visualiser(fen):
-                        board = []
-                        for row in fen.split('/'):
-                            brow = []
-                            for c in row:
-                                if c == ' ':
-                                    break
-                                elif c in '12345678':
-                                    brow.extend(['--'] * int(c))
-                                elif c == 'p':
-                                    brow.append('bp')
-                                elif c == 'P':
-                                    brow.append('wp')
-                                elif c > 'Z':
-                                    brow.append('b' + c.upper())
-                                else:
-                                    brow.append('w' + c)
-
-                            board.append(brow)
-                        return board
-
-                    pprint(fen_visualiser(fen))
+                    pprint(ChessPiece.fen_visualiser(fen))
                     print("")
 
 asyncio.get_event_loop().run_until_complete(listen())
