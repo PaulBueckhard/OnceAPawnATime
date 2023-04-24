@@ -66,3 +66,40 @@ class ChessPiece:
         dif_x = self.to_x - self.from_x
         dif_y = self.to_y - self.from_y
         self.difference = [dif_x, dif_y]
+
+    def fen_visualiser(fen):
+        board = []
+        for row in fen.split('/'):
+            brow = []
+            for c in row:
+                if c == ' ':
+                    break
+                elif c in '12345678':
+                    brow.extend(['--'] * int(c))
+                elif c == 'p':
+                    brow.append('♙ ')
+                elif c == 'P':
+                    brow.append('♟︎ ')
+                elif c == 'r':
+                    brow.append('♖ ')
+                elif c == 'R':
+                    brow.append('♜ ')
+                elif c == 'n':
+                    brow.append('♘ ')
+                elif c == 'N':
+                    brow.append('♞ ')
+                elif c == 'b':
+                    brow.append('♗ ')
+                elif c == 'B':
+                    brow.append('♝ ')
+                elif c == 'q':
+                    brow.append('♕ ')
+                elif c == 'Q':
+                    brow.append('♛ ')
+                elif c == 'k':
+                    brow.append('♔ ')
+                elif c == 'K':
+                    brow.append('♚ ')
+
+            board.append(brow)
+        return board
