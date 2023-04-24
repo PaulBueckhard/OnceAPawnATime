@@ -7,13 +7,20 @@ import sys
 import chess
 import random
 from pprint import pprint
+from time import sleep
+import RPi.GPIO as GPIO
+from motor import Motor
+from motor import Units
 
 from piece_coordinates import ChessPiece
 from chess_ai import ChessAI
+import motor_move
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-l", "--local", default=False, action=argparse.BooleanOptionalAction, help="Use local server")
 parser.add_argument("--override-code", help="Override authentication code")
+
+units = Units()
 
 play_against_ai = input("Do you want to play against the AI? ")
 board = chess.Board()
@@ -59,7 +66,7 @@ async def listen():
             if server_res["type"] == "receive-move":
                 ChessPiece.coordinate_converter_robot(ChessPiece, server_res["from"], server_res["to"])
                 ChessPiece.calculate_difference(ChessPiece)
-                # TODO: HERE GOES CODE THAT MOVES THE ROBOT
+                motor_move.move_motor_on_board(ChessPiece.difference[0], ChessPiece.difference[1], units)
 
 
             # Play against AI on website
