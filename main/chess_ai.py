@@ -1,5 +1,4 @@
 import chess
-import random
 
 class ChessAI:
 
@@ -42,10 +41,6 @@ class ChessAI:
                 if beta <= alpha:
                     break
             return min_eval
-
-    def random_move(board):
-        legal_moves = list(board.legal_moves)
-        return random.choice(legal_moves)
 
     def play_move(ChessPiece, board, depth, server_res):
         ChessPiece.coordinate_converter_ai(ChessPiece, server_res["from"], server_res["to"])
