@@ -23,6 +23,8 @@ parser.add_argument("--override-code", help="Override authentication code")
 units = Units()
 
 play_against_ai = input("Do you want to play against the AI? ")
+if play_against_ai.lower() == "yes" or play_against_ai.lower() == "y":
+    depth = int(input("Choose a difficulty level: 1(easy), 2(medium), 3(hard) "))
 board = chess.Board()
 visualise_board = input("Do you want a board visualisation in the console? ")
 
@@ -72,25 +74,7 @@ async def listen():
             # Play against AI on website
             if play_against_ai.lower() == "yes" or play_against_ai.lower() == "y":
                 if server_res["type"] == "receive-move":
-                    ChessPiece.coordinate_converter_ai(ChessPiece, server_res["from"], server_res["to"])
-                    player_move = ChessPiece.player_move
-                    
-                    move = None
-                    while move not in board.legal_moves:
-                        move = chess.Move.from_uci(player_move)
-                    board.push(move)
-
-                    move = None
-                    max_eval = float('-inf')
-                    for possible_move in board.legal_moves:
-                        board.push(possible_move)
-                        eval = ChessAI.minimax(board, 3, float('-inf'), float('inf'), False)
-                        board.pop()
-                        if eval > max_eval:
-                            max_eval = eval
-                            move = possible_move
-                    board.push(move)
-                    ChessPiece.coordinate_converter_webserver(ChessPiece, move)
+                    ChessAI.play_move(ChessPiece, board, depth, server_res)
                     await ws.send(json.dumps({"type": "send-move", "from": ChessPiece.ai_from, "to": ChessPiece.ai_to}))
 
 

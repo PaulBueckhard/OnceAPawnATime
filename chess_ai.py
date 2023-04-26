@@ -1,5 +1,4 @@
 import chess
-import random
 
 class ChessAI:
 
@@ -43,6 +42,23 @@ class ChessAI:
                     break
             return min_eval
 
-    def random_move(board):
-        legal_moves = list(board.legal_moves)
-        return random.choice(legal_moves)
+    def play_move(ChessPiece, board, depth, server_res):
+        ChessPiece.coordinate_converter_ai(ChessPiece, server_res["from"], server_res["to"])
+        player_move = ChessPiece.player_move
+        
+        move = None
+        while move not in board.legal_moves:
+            move = chess.Move.from_uci(player_move)
+        board.push(move)
+
+        move = None
+        max_eval = float('-inf')
+        for possible_move in board.legal_moves:
+            board.push(possible_move)
+            eval = ChessAI.minimax(board, depth, float('-inf'), float('inf'), False)
+            board.pop()
+            if eval > max_eval:
+                max_eval = eval
+                move = possible_move
+        board.push(move)
+        ChessPiece.coordinate_converter_webserver(ChessPiece, move)
