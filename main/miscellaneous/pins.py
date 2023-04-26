@@ -1,4 +1,3 @@
-
 class Pins:
     def __init__(self, motorId):
         print(f"Setting pins for {motorId}.")

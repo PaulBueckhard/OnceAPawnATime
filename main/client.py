@@ -7,26 +7,33 @@ import sys
 import chess
 import random
 from pprint import pprint
-from time import sleep
-import RPi.GPIO as GPIO
-from motor import Motor
-from motor import Units
 
-from piece_coordinates import ChessPiece
-from chess_ai import ChessAI
-import motor_move
+# Motor imports
+try:
+    import RPi.GPIO as GPIO 
+    from motors.motor_move import Motor_move
+except ModuleNotFoundError:
+    pass
+
+# AI imports
+from chess_ai.chess_ai import ChessAI
+
+# Miscellaneous imports
+from miscellaneous.piece_coordinates import ChessPiece
+from miscellaneous.units import Units
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-l", "--local", default=False, action=argparse.BooleanOptionalAction, help="Use local server")
 parser.add_argument("--override-code", help="Override authentication code")
 
-units = Units()
-
 play_against_ai = input("Do you want to play against the AI? ")
 if play_against_ai.lower() == "yes" or play_against_ai.lower() == "y":
     depth = int(input("Choose a difficulty level: 1(easy), 2(medium), 3(hard) "))
-board = chess.Board()
+    board = chess.Board()
+
 visualise_board = input("Do you want a board visualisation in the console? ")
+
+units = Units()
 
 async def listen():
     url = "wss://api.pawn-hub.de/host" if not parser.parse_args().local else "ws://127.0.0.1:3000/host"
@@ -68,7 +75,10 @@ async def listen():
             if server_res["type"] == "receive-move":
                 ChessPiece.coordinate_converter_robot(ChessPiece, server_res["from"], server_res["to"])
                 ChessPiece.calculate_difference(ChessPiece)
-                motor_move.move_motor_on_board(ChessPiece.difference[0], ChessPiece.difference[1], units)
+                try:
+                    Motor_move.move_motor_on_board(ChessPiece.difference[0], ChessPiece.difference[1], units)
+                except NameError:
+                    pass
 
 
             # Play against AI on website

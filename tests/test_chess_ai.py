@@ -1,5 +1,5 @@
 import chess
-from ..main.chess_ai import ChessAI
+from ..main.chess_ai.chess_ai import ChessAI
 
 board = chess.Board()
 
