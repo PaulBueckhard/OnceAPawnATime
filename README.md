@@ -1,1 +1,0 @@
-This module is a part of the Chess:E project, an internet enabled chess board. The "board client" is responsible for receiving chess moves sent from the backend server and executing them on the physical chess board by moving the motors accordingly. This code runs entirely on the Raspberry Pi (3 or 400), and includes an algorithm to simulate a chess game virtually.
