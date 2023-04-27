@@ -69,7 +69,7 @@ Additionally it hosts a `fen_visualiser` function which prints the current board
 Saves all required units, which are used for motor movements.
 
 ### Pins
-Saves the pins regulation for the connection of Raspberry Pi and motors.
+Saves the pin assignment for the connection of Raspberry Pi and motors.
 
 ## Requestflow
 
