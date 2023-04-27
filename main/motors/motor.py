@@ -1,8 +1,13 @@
 from time import sleep
-import RPi.GPIO as GPIO
 from enum import Enum
-from pins import Pins
-from units import Units
+from miscellaneous.pins import Pins
+from miscellaneous.units import Units
+
+try:
+    import RPi.GPIO as GPIO
+except ModuleNotFoundError:
+    pass
+
 units = Units()
     
 class MotorId(Enum):
