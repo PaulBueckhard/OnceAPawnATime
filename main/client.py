@@ -19,8 +19,8 @@ except ModuleNotFoundError:
 from chess_ai.chess_ai import ChessAI
 
 # Miscellaneous imports
-from miscellaneous.piece_coordinates import ChessPiece
-from miscellaneous.units import Units
+from motors.miscellaneous.piece_coordinates import ChessPiece
+from motors.miscellaneous.units import Units
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-l", "--local", default=False, action=argparse.BooleanOptionalAction, help="Use local server")

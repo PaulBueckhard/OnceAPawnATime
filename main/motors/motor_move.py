@@ -1,5 +1,5 @@
 from time import sleep
-from motors.motor import Motor
+from motor import Motor
 from miscellaneous.units import Units
 
 try:
@@ -57,6 +57,7 @@ class Motor_move:
                 for i in range(dif_x):
                     motorX.step(units.fieldSteps, 'cw', units.usDelay)
             elif dif_x < 0:
+                dif_x = dif_x * -1
                 for i in range(dif_x):
                     motorX.step(units.fieldSteps, 'ccw', units.usDelay)
 
