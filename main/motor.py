@@ -1,7 +1,7 @@
 from time import sleep
 from enum import Enum
-from miscellaneouspins import Pins
-from miscellaneousunits import Units
+from miscellaneous.pins import Pins
+from miscellaneous.units import Units
 
 try:
     import RPi.GPIO as GPIO

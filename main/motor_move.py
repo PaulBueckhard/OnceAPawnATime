@@ -63,3 +63,10 @@ class Motor_move:
 
         except KeyboardInterrupt:
             GPIO.output(motorX.pins.EN, GPIO.HIGH)
+
+# try:
+#     units = Units()
+#     Motor_move.move_motor_on_board(4, 0, units)
+#     Motor_move.move_motor_on_board(-4, 0, units)
+# except KeyboardInterrupt:
+#     GPIO.output(Motor_move.motorX.pins.EN, GPIO.HIGH)

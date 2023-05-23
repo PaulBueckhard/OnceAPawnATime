@@ -11,7 +11,7 @@ from pprint import pprint
 # Motor imports
 try:
     import RPi.GPIO as GPIO 
-    from motors.motor_move import Motor_move
+    from motor_move import Motor_move
 except ModuleNotFoundError:
     pass
 
@@ -19,8 +19,8 @@ except ModuleNotFoundError:
 from chess_ai.chess_ai import ChessAI
 
 # Miscellaneous imports
-from motors.miscellaneous.piece_coordinates import ChessPiece
-from motors.miscellaneous.units import Units
+from miscellaneous.piece_coordinates import ChessPiece
+from miscellaneous.units import Units
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-l", "--local", default=False, action=argparse.BooleanOptionalAction, help="Use local server")
