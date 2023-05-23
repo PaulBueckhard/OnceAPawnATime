@@ -43,7 +43,7 @@ class Motor_move:
                 sleep(1)
                 motorX.step(steps, 'ccw', units.usDelay)
                 sleep(1)
-            #motorX.step(2400, 'ccw', units.usDelay)
+            # motorX.step(2400, 'ccw', units.usDelay)
 
         # Scavenging work after the end of the program
         except KeyboardInterrupt:
@@ -52,21 +52,32 @@ class Motor_move:
     def move_motor_on_board(dif_x, dif_y, units):
         try: 
             motorX = Motor('motor_x')
+            motorY = Motor('motor_y')
 
             if dif_x > 0:
-                for i in range(dif_x):
-                    motorX.step(units.fieldSteps, 'cw', units.usDelay)
+                travelFields = units.fieldSteps * dif_x
+                motorX.step(travelFields, 'cw', units.usDelay)
+
             elif dif_x < 0:
                 dif_x = dif_x * -1
-                for i in range(dif_x):
-                    motorX.step(units.fieldSteps, 'ccw', units.usDelay)
+                travelFields = units.fieldSteps * dif_x
+                motorX.step(travelFields, 'ccw', units.usDelay)
+
+            # if dif_y > 0:
+            #     travelFields = units.fieldSteps * dif_y
+            #     motorY.step(travelFields, 'cw', units.usDelay)
+
+            # elif dif_y < 0:
+            #     dif_y = dif_y * -1
+            #     travelFields = units.fieldSteps * dif_y
+            #     motorY.step(travelFields, 'ccw', units.usDelay)
 
         except KeyboardInterrupt:
             GPIO.output(motorX.pins.EN, GPIO.HIGH)
 
 # try:
 #     units = Units()
-#     Motor_move.move_motor_on_board(4, 0, units)
-#     Motor_move.move_motor_on_board(-4, 0, units)
+#     Motor_move.move_motor_on_board(3, 0, units)
+#     Motor_move.move_motor_on_board(-3, 0, units)
 # except KeyboardInterrupt:
 #     GPIO.output(Motor_move.motorX.pins.EN, GPIO.HIGH)
