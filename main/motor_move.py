@@ -1,6 +1,7 @@
 from time import sleep
-from motor import Motor
+from motor import MotorX, MotorY
 from miscellaneous.units import Units
+import test
 
 try:
     import RPi.GPIO as GPIO
@@ -37,7 +38,7 @@ class Motor_move:
 
     def move_motor_back_and_forth(steps, reps, units):
         try: # Main program loop
-            motorX = Motor('motor_x')
+            motorX = MotorX('motor_x')
             for i in range(reps):
                 motorX.step(steps, 'cw', units.usDelay)
                 sleep(1)
@@ -51,8 +52,9 @@ class Motor_move:
 
     def move_motor_on_board(dif_x, dif_y, units):
         try: 
-            motorX = Motor('motor_x')
-            motorY = Motor('motor_y')
+            motorX = MotorX('motor_x')
+            motorY = MotorY('motor_y')
+            test.magnet_on()
 
             if dif_x > 0:
                 travelFields = units.fieldSteps * dif_x
@@ -63,21 +65,24 @@ class Motor_move:
                 travelFields = units.fieldSteps * dif_x
                 motorX.step(travelFields, 'ccw', units.usDelay)
 
-            # if dif_y > 0:
-            #     travelFields = units.fieldSteps * dif_y
-            #     motorY.step(travelFields, 'cw', units.usDelay)
+            if dif_y > 0:
+                travelFields = units.fieldSteps * dif_y
+                motorY.step(travelFields, 'cw', units.usDelay)
 
-            # elif dif_y < 0:
-            #     dif_y = dif_y * -1
-            #     travelFields = units.fieldSteps * dif_y
-            #     motorY.step(travelFields, 'ccw', units.usDelay)
+            elif dif_y < 0:
+                dif_y = dif_y * -1
+                travelFields = units.fieldSteps * dif_y
+                motorY.step(travelFields, 'ccw', units.usDelay)
+
+            test.magnet_off()
 
         except KeyboardInterrupt:
-            GPIO.output(motorX.pins.EN, GPIO.HIGH)
+            GPIO.output(motorX.pins.EN_X, GPIO.HIGH)
+            GPIO.output(motorY.pins.EN_Y, GPIO.HIGH)
 
 # try:
 #     units = Units()
-#     Motor_move.move_motor_on_board(3, 0, units)
-#     Motor_move.move_motor_on_board(-3, 0, units)
+#     Motor_move.move_motor_on_board(0, -3, units)
+#     Motor_move.move_motor_on_board(0, 0, units)
 # except KeyboardInterrupt:
 #     GPIO.output(Motor_move.motorX.pins.EN, GPIO.HIGH)
