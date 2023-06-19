@@ -42,6 +42,4 @@ class Motor_move:
 
         Motor_move.move_motor_on_board(move_x, move_y, units)
 
-Motor_move.manual_movement()
-
-# 192.168.170.9
+# Motor_move.manual_movement()

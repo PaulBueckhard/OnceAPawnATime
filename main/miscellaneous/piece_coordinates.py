@@ -1,12 +1,16 @@
 class ChessPiece:
-    def __init__(self, from_x, from_y, to_x, to_y, difference, player_move, ai_move, ai_from, ai_to):
+    def __init__(self, from_x, from_y, to_x, to_y, current_position_x, current_position_y, difference_from_to, difference_current_from, player_move, ai_move, ai_from, ai_to):
         self.from_x = from_x
         self.from_y = from_y
 
         self.to_x = to_x
         self.to_y = to_y
 
-        self.difference = difference
+        self.current_position_x = current_position_x
+        self.current_position_y = current_position_y
+
+        self.difference_from_to = difference_from_to
+        self.difference_current_from = difference_current_from
 
         self.player_move = player_move
 
@@ -62,12 +66,21 @@ class ChessPiece:
         self.ai_from = ai_from
         self.ai_to = ai_to
 
-    def calculate_difference(self):
+    def save_current_position(self):
+        self.current_position_x = self.to_x
+        self.current_position_y = self.to_y
+
+    def calculate_difference_from_to(self):
         dif_x = self.to_x - self.from_x
         dif_y = self.to_y - self.from_y
-        self.difference = [dif_x, dif_y]
+        self.difference_from_to = [dif_x, dif_y]
 
-    def fen_visualiser(fen):
+    def calculate_difference_current_from(self):
+        dif_x = self.from_x - self.current_position_x
+        dif_y = self.from_y - self.current_position_y
+        self.difference_current_from = [dif_x, dif_y]
+
+    def fen_visualiser(self, fen):
         board = []
         for row in fen.split('/'):
             brow = []

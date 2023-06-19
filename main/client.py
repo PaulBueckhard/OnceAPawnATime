@@ -34,6 +34,7 @@ if play_against_ai.lower() == "yes" or play_against_ai.lower() == "y":
 visualise_board = input("Do you want a board visualisation in the console? ")
 
 units = Units()
+chesspiece = ChessPiece(0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0)
 
 async def listen():
     url = "wss://api.pawn-hub.de/host" if not parser.parse_args().local else "ws://127.0.0.1:3000/host"
@@ -73,10 +74,19 @@ async def listen():
 
             # Mirror move on physical board
             if server_res["type"] == "receive-move":
-                ChessPiece.coordinate_converter_robot(ChessPiece, server_res["from"], server_res["to"])
-                ChessPiece.calculate_difference(ChessPiece)
                 try:
-                    Motor_move.move_motor_on_board(ChessPiece.difference[0], ChessPiece.difference[1], units)
+                    chesspiece.coordinate_converter_robot(server_res["from"], server_res["to"])
+
+                    chesspiece.calculate_difference_current_from()
+
+                    Motor_move.move_motor_on_board(chesspiece.difference_current_from[0], chesspiece.difference_current_from[1], units)
+
+                    chesspiece.calculate_difference_from_to()
+
+                    Motor_move.move_motor_on_board(chesspiece.difference_from_to[0], chesspiece.difference_from_to[1], units)
+
+                    chesspiece.save_current_position()
+
                 except NameError:
                     pass
 
@@ -84,8 +94,8 @@ async def listen():
             # Play against AI on website
             if play_against_ai.lower() == "yes" or play_against_ai.lower() == "y":
                 if server_res["type"] == "receive-move":
-                    ChessAI.play_move(ChessPiece, board, depth, server_res)
-                    await ws.send(json.dumps({"type": "send-move", "from": ChessPiece.ai_from, "to": ChessPiece.ai_to}))
+                    ChessAI.play_move(chesspiece, board, depth, server_res)
+                    await ws.send(json.dumps({"type": "send-move", "from": chesspiece.ai_from, "to": chesspiece.ai_to}))
 
 
             # Visualise moves in console
@@ -93,7 +103,7 @@ async def listen():
                 if (server_res["type"] == "matched") or (server_res["type"] == "receive-move"):
                     await ws.send(json.dumps({"type": "get-board"}))
                     fen = server_res["fen"]
-                    pprint(ChessPiece.fen_visualiser(fen))
+                    pprint(chesspiece.fen_visualiser(fen))
                     print("")
 
 asyncio.get_event_loop().run_until_complete(listen())
