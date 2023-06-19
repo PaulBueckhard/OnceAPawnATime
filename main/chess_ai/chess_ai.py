@@ -42,9 +42,9 @@ class ChessAI:
                     break
             return min_eval
 
-    def play_move(ChessPiece, board, depth, server_res):
-        ChessPiece.coordinate_converter_ai(ChessPiece, server_res["from"], server_res["to"])
-        player_move = ChessPiece.player_move
+    def play_move(chesspiece, board, depth, server_res):
+        chesspiece.coordinate_converter_ai(server_res["from"], server_res["to"])
+        player_move = chesspiece.player_move
         
         move = None
         while move not in board.legal_moves:
@@ -61,4 +61,4 @@ class ChessAI:
                 max_eval = eval
                 move = possible_move
         board.push(move)
-        ChessPiece.coordinate_converter_webserver(ChessPiece, move)
+        chesspiece.coordinate_converter_webserver(move)
