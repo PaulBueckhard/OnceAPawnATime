@@ -37,8 +37,8 @@ class Motor_move:
             GPIO.output(motorY.EN, GPIO.HIGH)
 
     def manual_movement():
-        move_x = int(input("X-Coordinate: "))
-        move_y = int(input("Y-Coordinate: "))
+        move_x = int(input("Move fields in X direction: "))
+        move_y = int(input("Move fields in Y direciton: "))
 
         Motor_move.move_motor_on_board(move_x, move_y, units)
 
