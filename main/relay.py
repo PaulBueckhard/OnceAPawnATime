@@ -1,11 +1,13 @@
+from miscellaneous.pins import Pins
 try:
     import RPi.GPIO as GPIO
 except ModuleNotFoundError:
     pass
 
+pins = Pins()
+
 GPIO.setmode(GPIO.BCM) # GPIO Numbers instead of board numbers
 
-RELAIS_1_GPIO = 27
-GPIO.setup(RELAIS_1_GPIO, GPIO.OUT) # GPIO Assign mode
-GPIO.output(RELAIS_1_GPIO, GPIO.LOW) # out
-#GPIO.output(RELAIS_1_GPIO, GPIO.HIGH) # on
+GPIO.setup(pins.RELAIS, GPIO.OUT) # GPIO Assign mode
+GPIO.output(pins.RELAIS, GPIO.LOW) # out
+#GPIO.output(pins.RELAIS, GPIO.HIGH) # on

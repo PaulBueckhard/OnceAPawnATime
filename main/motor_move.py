@@ -1,68 +1,27 @@
 from time import sleep
-from motor import MotorX, MotorY
+from motor import Motor
 from miscellaneous.units import Units
-import test
-
+from miscellaneous.pins import Pins
 try:
     import RPi.GPIO as GPIO
 except ModuleNotFoundError:
     pass
 
-""" GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
+pins = Pins()
+units = Units()
 
-
-STEP = 5 # Step GPIO pin
-DIR = 3 # Direction GPIO pin
-EN = 23 # Enable pin
-
-
-GPIO.setup(STEP, GPIO.OUT)
-GPIO.setup(DIR, GPIO.OUT)
-GPIO.setup(EN, GPIO.OUT) """
-
-""" # 2400 steps makes about 46.5 cm linear distance (5.1613 steps/mm)
-MIN_US_DELAY = 950 # Minimum required delay between steps
-usDelay = 950 # number of microseconds
-uS = 0.000001 # one microsecond
-spmm = 5.1613 # steps/mm
-fieldLength = 58 # width and length of a field on the board in mm
-# clockwise movement on motor_x is X positive
-# counterclockwise movement on motor_x is X negative """
+motorX = Motor('motorX', pins.STEP_X, pins.DIR_X, pins.EN_X)
+motorY = Motor('motorY', pins.STEP_Y, pins.DIR_Y, pins.EN_Y)
 
 class Motor_move:
-    steps = 2000 # Nr of steps
-    reps = 3 # Nr of times to repeat script 
-    units = Units()
-    # print("[press ctrl+c to end the script]")
-
-    def move_motor_back_and_forth(steps, reps, units):
-        try: # Main program loop
-            motorX = MotorX('motor_x')
-            for i in range(reps):
-                motorX.step(steps, 'cw', units.usDelay)
-                sleep(1)
-                motorX.step(steps, 'ccw', units.usDelay)
-                sleep(1)
-            # motorX.step(2400, 'ccw', units.usDelay)
-
-        # Scavenging work after the end of the program
-        except KeyboardInterrupt:
-            GPIO.output(motorX.pins.EN, GPIO.HIGH)
-
     def move_motor_on_board(dif_x, dif_y, units):
         try: 
-            motorX = MotorX('motor_x')
-            motorY = MotorY('motor_y')
-            test.magnet_on()
-
             if dif_x > 0:
                 travelFields = units.fieldSteps * dif_x
                 motorX.step(travelFields, 'cw', units.usDelay)
 
             elif dif_x < 0:
-                dif_x = dif_x * -1
-                travelFields = units.fieldSteps * dif_x
+                travelFields = units.fieldSteps * dif_x * -1
                 motorX.step(travelFields, 'ccw', units.usDelay)
 
             if dif_y > 0:
@@ -70,19 +29,19 @@ class Motor_move:
                 motorY.step(travelFields, 'cw', units.usDelay)
 
             elif dif_y < 0:
-                dif_y = dif_y * -1
-                travelFields = units.fieldSteps * dif_y
+                travelFields = units.fieldSteps * dif_y * -1
                 motorY.step(travelFields, 'ccw', units.usDelay)
 
-            test.magnet_off()
-
         except KeyboardInterrupt:
-            GPIO.output(motorX.pins.EN_X, GPIO.HIGH)
-            GPIO.output(motorY.pins.EN_Y, GPIO.HIGH)
+            GPIO.output(motorX.EN, GPIO.HIGH)
+            GPIO.output(motorY.EN, GPIO.HIGH)
 
-# try:
-#     units = Units()
-#     Motor_move.move_motor_on_board(0, -3, units)
-#     Motor_move.move_motor_on_board(0, 0, units)
-# except KeyboardInterrupt:
-#     GPIO.output(Motor_move.motorX.pins.EN, GPIO.HIGH)
+    def manual_movement():
+        move_x = int(input("X-Coordinate: "))
+        move_y = int(input("Y-Coordinate: "))
+
+        Motor_move.move_motor_on_board(move_x, move_y, units)
+
+Motor_move.manual_movement()
+
+# 192.168.170.9

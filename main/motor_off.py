@@ -1,14 +1,15 @@
 from motor import Motor
-from miscellaneous.units import Units
+from miscellaneous.pins import Pins
 
 try:
     import RPi.GPIO as GPIO
 except ModuleNotFoundError:
     pass
 
+pins = Pins()
 
-motorX = Motor('motor_x')
-motorY = Motor('motor_y')
+motorX = Motor('motorX', pins.STEP_X, pins.DIR_X, pins.EN_X)
+motorY = Motor('motorY', pins.STEP_Y, pins.DIR_Y, pins.EN_Y)
 
-GPIO.output(motorX.pins.EN, GPIO.HIGH)
-GPIO.output(motorY.pins.EN, GPIO.HIGH)
+GPIO.output(motorX.EN, GPIO.HIGH)
+GPIO.output(motorY.EN, GPIO.HIGH)
