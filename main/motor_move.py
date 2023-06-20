@@ -1,4 +1,5 @@
 from time import sleep
+from threading import Thread
 from motor import Motor
 from miscellaneous.units import Units
 from miscellaneous.pins import Pins
@@ -43,3 +44,26 @@ class Motor_move:
         Motor_move.move_motor_on_board(move_x, move_y, units)
 
 # Motor_move.manual_movement()
+
+
+def moveX():
+    motorX.step((units.fieldSteps * 6), 'cw', units.usDelay)
+
+def moveY():
+    motorY.step((units.fieldSteps * 6), 'ccw', units.usDelay)
+
+def moveXback():
+    motorX.step((units.fieldSteps * 5), 'ccw', units.usDelay)
+
+def moveYback():
+    motorY.step((units.fieldSteps * 5), 'ccw', units.usDelay)
+
+def move():
+    Thread(target = moveX).start()
+    Thread(target = moveY).start()
+
+def moveback():
+    Thread(target = moveXback).start()
+    Thread(target = moveYback).start()
+move()
+#moveback()
