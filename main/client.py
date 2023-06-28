@@ -12,6 +12,7 @@ from pprint import pprint
 try:
     import RPi.GPIO as GPIO 
     from motor_move import Motor_move
+    from magnet import Magnet
 except ModuleNotFoundError:
     pass
 
@@ -35,6 +36,7 @@ visualise_board = input("Do you want a board visualisation in the console? ")
 
 units = Units()
 chesspiece = ChessPiece(0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0)
+magnet = Magnet()
 
 async def listen():
     url = "wss://api.pawn-hub.de/host" if not parser.parse_args().local else "ws://127.0.0.1:3000/host"
@@ -83,7 +85,11 @@ async def listen():
 
                     chesspiece.calculate_difference_from_to()
 
+                    magnet.on()
+
                     Motor_move.move_motor_on_board(chesspiece.difference_from_to[0], chesspiece.difference_from_to[1], units)
+
+                    magnet.off()
 
                     chesspiece.save_current_position()
 
