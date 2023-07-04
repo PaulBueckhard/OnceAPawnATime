@@ -2,6 +2,10 @@ import logging, time
 import kaldi_active_grammar
 
 logging.basicConfig(level=20)
+
+# TODO: Download kali model to raspberry pi and change path VVV
+
+
 model_dir = "C:/Users/user/Documents/kaldi_model_daanzu_20211030-biglm/kaldi_model"  # Default
 tmp_dir = None  # Default
 
