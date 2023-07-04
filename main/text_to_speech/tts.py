@@ -1,8 +1,15 @@
 from gtts import gTTS
 import playsound
+import os
 
-tts = gTTS('hello', lang='en')
+name = "test"
+filename = "%s.mp3" % name
 
-tts.save('hello.mp3')
 
-playsound.playsound('hello.mp3')
+tts = gTTS('This move is not legal', lang='en')
+
+tts.save(filename)
+
+playsound.playsound(filename)
+
+os.remove(filename) 
