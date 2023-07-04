@@ -1,6 +1,8 @@
-import nanotts
+from gtts import gTTS
+import playsound
 
-ntts = nanotts.NanoTTS()
+tts = gTTS('hello', lang='en')
 
-# Generate speech from a string
-ntts.speaks("Hello World!")
+tts.save('hello.mp3')
+
+playsound.playsound('hello.mp3')
