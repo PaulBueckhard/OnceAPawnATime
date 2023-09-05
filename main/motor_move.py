@@ -16,22 +16,87 @@ motorY = Motor('motorY', pins.STEP_Y, pins.DIR_Y, pins.EN_Y)
 
 class Motor_move:
     def move_motor_on_board(dif_x, dif_y, units):
-        try: 
-            if dif_x > 0:
-                travelFields = units.fieldSteps * dif_x
-                motorX.step(travelFields, 'cw', units.usDelay)
+        try:
+            if (dif_x == 2) and (dif_y == 1):
+                travelFieldsX = units.fieldSteps * dif_x
+                travelFieldsY = units.fieldSteps * dif_y
 
-            elif dif_x < 0:
-                travelFields = units.fieldSteps * dif_x * -1
-                motorX.step(travelFields, 'ccw', units.usDelay)
+                motorY.step((travelFieldsY / 2), 'cw', units.usDelay)
+                motorX.step(travelFieldsX, 'cw', units.usDelay)
+                motorY.step((travelFieldsY / 2), 'cw', units.usDelay)
+            
+            elif (dif_x == 1) and (dif_y == 2):
+                travelFieldsX = units.fieldSteps * dif_x
+                travelFieldsY = units.fieldSteps * dif_y
 
-            if dif_y > 0:
-                travelFields = units.fieldSteps * dif_y
-                motorY.step(travelFields, 'cw', units.usDelay)
+                motorX.step((travelFieldsX / 2), 'cw', units.usDelay)
+                motorY.step(travelFieldsY, 'cw', units.usDelay)
+                motorX.step((travelFieldsX / 2), 'cw', units.usDelay)
 
-            elif dif_y < 0:
-                travelFields = units.fieldSteps * dif_y * -1
-                motorY.step(travelFields, 'ccw', units.usDelay)
+            elif (dif_x == -2) and (dif_y == 1):
+                travelFieldsX = units.fieldSteps * dif_x * -1
+                travelFieldsY = units.fieldSteps * dif_y
+
+                motorY.step((travelFieldsY / 2), 'cw', units.usDelay)
+                motorX.step(travelFieldsX, 'ccw', units.usDelay)
+                motorY.step((travelFieldsY / 2), 'cw', units.usDelay)
+
+            elif (dif_x == -1) and (dif_y == 2):
+                travelFieldsX = units.fieldSteps * dif_x * -1
+                travelFieldsY = units.fieldSteps * dif_y
+
+                motorX.step((travelFieldsX / 2), 'ccw', units.usDelay)
+                motorY.step(travelFieldsY, 'cw', units.usDelay)
+                motorX.step((travelFieldsX / 2), 'ccw', units.usDelay)
+
+            elif (dif_x == 2) and (dif_y == -1):
+                travelFieldsX = units.fieldSteps * dif_x
+                travelFieldsY = units.fieldSteps * dif_y * -1
+
+                motorY.step((travelFieldsY / 2), 'ccw', units.usDelay)
+                motorX.step(travelFieldsX, 'cw', units.usDelay)
+                motorY.step((travelFieldsY / 2), 'ccw', units.usDelay)
+
+            elif (dif_x == 1) and (dif_y == -2):
+                travelFieldsX = units.fieldSteps * dif_x
+                travelFieldsY = units.fieldSteps * dif_y * -1
+
+                motorX.step((travelFieldsX / 2), 'cw', units.usDelay)
+                motorY.step(travelFieldsY, 'ccw', units.usDelay)
+                motorX.step((travelFieldsX / 2), 'cw', units.usDelay)
+
+            elif (dif_x == -2) and (dif_y == -1):
+                travelFieldsX = units.fieldSteps * dif_x * -1
+                travelFieldsY = units.fieldSteps * dif_y * -1
+
+                motorY.step((travelFieldsY / 2), 'ccw', units.usDelay)
+                motorX.step(travelFieldsX, 'ccw', units.usDelay)
+                motorY.step((travelFieldsY / 2), 'ccw', units.usDelay)
+
+            elif (dif_x == -1) and (dif_y == -2):
+                travelFieldsX = units.fieldSteps * dif_x * -1
+                travelFieldsY = units.fieldSteps * dif_y * -1
+
+                motorX.step((travelFieldsX / 2), 'ccw', units.usDelay)
+                motorY.step(travelFieldsY, 'ccw', units.usDelay)
+                motorX.step((travelFieldsX / 2), 'ccw', units.usDelay)
+                
+            else: 
+                if dif_x > 0:
+                    travelFields = units.fieldSteps * dif_x
+                    motorX.step(travelFields, 'cw', units.usDelay)
+
+                elif dif_x < 0:
+                    travelFields = units.fieldSteps * dif_x * -1
+                    motorX.step(travelFields, 'ccw', units.usDelay)
+
+                if dif_y > 0:
+                    travelFields = units.fieldSteps * dif_y
+                    motorY.step(travelFields, 'cw', units.usDelay)
+
+                elif dif_y < 0:
+                    travelFields = units.fieldSteps * dif_y * -1
+                    motorY.step(travelFields, 'ccw', units.usDelay)
 
         except KeyboardInterrupt:
             GPIO.output(motorX.EN, GPIO.HIGH)
@@ -65,5 +130,5 @@ def move():
 def moveback():
     Thread(target = moveXback).start()
     Thread(target = moveYback).start()
-move()
+#move()
 #moveback()
