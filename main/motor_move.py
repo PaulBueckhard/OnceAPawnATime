@@ -17,6 +17,7 @@ motorY = Motor('motorY', pins.STEP_Y, pins.DIR_Y, pins.EN_Y)
 class Motor_move:
     def move_motor_on_board(dif_x, dif_y, units):
         try:
+            # Knight Movement
             if (dif_x == 2) and (dif_y == 1):
                 travelFieldsX = units.fieldSteps * dif_x
                 travelFieldsY = units.fieldSteps * dif_y
@@ -82,21 +83,30 @@ class Motor_move:
                 motorX.step((travelFieldsX / 2), 'ccw', units.usDelay)
                 
             else: 
+                # Non-Knight Movement
                 if dif_x > 0:
                     travelFields = units.fieldSteps * dif_x
-                    motorX.step(travelFields, 'cw', units.usDelay)
+                    def motorStepXPos():
+                        motorX.step(travelFields, 'cw', units.usDelay)
+                    Thread(target = motorStepXPos).start()
 
                 elif dif_x < 0:
                     travelFields = units.fieldSteps * dif_x * -1
-                    motorX.step(travelFields, 'ccw', units.usDelay)
+                    def motorStepXNeg():
+                        motorX.step(travelFields, 'ccw', units.usDelay)
+                    Thread(target = motorStepXNeg).start()
 
                 if dif_y > 0:
                     travelFields = units.fieldSteps * dif_y
-                    motorY.step(travelFields, 'cw', units.usDelay)
+                    def motorStepYPos():
+                        motorY.step(travelFields, 'cw', units.usDelay)
+                    Thread(target = motorStepYPos).start()
 
                 elif dif_y < 0:
                     travelFields = units.fieldSteps * dif_y * -1
-                    motorY.step(travelFields, 'ccw', units.usDelay)
+                    def motorStepYNeg():
+                        motorY.step(travelFields, 'ccw', units.usDelay)
+                    Thread(target = motorStepYNeg).start()
 
         except KeyboardInterrupt:
             GPIO.output(motorX.EN, GPIO.HIGH)
@@ -111,24 +121,24 @@ class Motor_move:
 # Motor_move.manual_movement()
 
 
-def moveX():
-    motorX.step((units.fieldSteps * 6), 'cw', units.usDelay)
+# def moveX():
+#     motorX.step((units.fieldSteps * 6), 'cw', units.usDelay)
 
-def moveY():
-    motorY.step((units.fieldSteps * 6), 'ccw', units.usDelay)
+# def moveY():
+#     motorY.step((units.fieldSteps * 6), 'ccw', units.usDelay)
 
-def moveXback():
-    motorX.step((units.fieldSteps * 5), 'ccw', units.usDelay)
+# def moveXback():
+#     motorX.step((units.fieldSteps * 5), 'ccw', units.usDelay)
 
-def moveYback():
-    motorY.step((units.fieldSteps * 5), 'ccw', units.usDelay)
+# def moveYback():
+#     motorY.step((units.fieldSteps * 5), 'ccw', units.usDelay)
 
-def move():
-    Thread(target = moveX).start()
-    Thread(target = moveY).start()
+# def move():
+#     Thread(target = moveX).start()
+#     Thread(target = moveY).start()
 
-def moveback():
-    Thread(target = moveXback).start()
-    Thread(target = moveYback).start()
-#move()
-#moveback()
+# def moveback():
+#     Thread(target = moveXback).start()
+#     Thread(target = moveYback).start()
+# move()
+# moveback()
