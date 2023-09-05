@@ -123,20 +123,51 @@ def reset():
 
 #time.sleep(1)
 
-# magnet_off()
+#magnet_off()
 
 # home_y()
 
-# time.sleep(1)
+def move_demo():
 
-# move_white_pawn()
+    magnet_on()
 
-# move_black_pawn()
+    motorY.step((units.fieldSteps * 1), "ccw", units.usDelay) # 1 nach unten
 
-# magnet_off()
+    motorX.step((units.fieldSteps * 1), "cw", units.usDelay) # 1 nach rechts
 
-# time.sleep(1)
+    magnet_off()
 
-# reset()
+    motorX.step((units.fieldSteps * 1), "ccw", units.usDelay) # 1 nach links
+
+    motorY.step((units.fieldSteps * 4), "ccw", units.usDelay) # 4 nach unten
+
+    magnet_on()
+
+    motorY.step((units.fieldSteps * 1), "cw", units.usDelay) # 1 nach oben
+
+    magnet_off()
+
+    time.sleep(4)
+
+    magnet_on()
+
+    motorY.step((units.fieldSteps * 1), "ccw", units.usDelay) # 1 nach unten
+
+    magnet_off()
+
+    motorY.step((units.fieldSteps * 4), "cw", units.usDelay) # 4 nach oben
+
+    motorX.step((units.fieldSteps * 1), "cw", units.usDelay) # 1 nach rechts
+
+    magnet_on()
+
+    motorX.step((units.fieldSteps * 1), "ccw", units.usDelay) # 1 nach links
+
+    motorY.step((units.fieldSteps * 1), "cw", units.usDelay) # 1 nach oben
+
+    magnet_off()
 
 
+while True:
+    move_demo()
+    time.sleep(4)
