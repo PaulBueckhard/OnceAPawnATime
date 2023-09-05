@@ -64,16 +64,24 @@ class Motor_move:
             else: 
                 # Non-Knight Movement
                 if dif_x > 0:
-                    motorX.step(travelFieldsX, 'cw', units.usDelay)
+                    def motorStepPosX():
+                        motorX.step(travelFieldsX, 'cw', units.usDelay)
+                    Thread(target = motorStepPosX).start()
 
                 elif dif_x < 0:
-                    motorX.step(travelFieldsX, 'ccw', units.usDelay)
+                    def motorStepNegX():
+                        motorX.step(travelFieldsX, 'ccw', units.usDelay)
+                    Thread(target = motorStepNegX).start()
 
                 if dif_y > 0:
-                    motorY.step(travelFieldsY, 'cw', units.usDelay)
+                    def motorStepPosY():
+                        motorY.step(travelFieldsY, 'cw', units.usDelay)
+                    Thread(target = motorStepPosY).start()
 
                 elif dif_y < 0:
-                    motorY.step(travelFieldsY, 'ccw', units.usDelay)
+                    def motorStepNegY():
+                        motorY.step(travelFieldsY, 'ccw', units.usDelay)
+                    Thread(target = motorStepNegY).start()
 
         except KeyboardInterrupt:
             GPIO.output(motorX.EN, GPIO.HIGH)
