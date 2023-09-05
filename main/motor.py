@@ -35,7 +35,7 @@ class Motor:
         GPIO.output(self.EN, GPIO.LOW)
         GPIO.output(self.DIR, GPIO.HIGH if (clockDirection == 'cw') else GPIO.LOW)
 
-        for i in range(moveSteps):
+        for i in range(int(moveSteps)):
             GPIO.output(self.STEP, GPIO.HIGH)
             sleep(units.uS * delay)
             GPIO.output(self.STEP, GPIO.LOW)
