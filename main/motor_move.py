@@ -17,13 +17,10 @@ motorY = Motor('motorY', pins.STEP_Y, pins.DIR_Y, pins.EN_Y)
 class Motor_move:
     def move_motor_on_board(dif_x, dif_y, units):
         try:
-<<<<<<< HEAD
+            # Knight Movement
             travelFieldsX = units.fieldSteps * abs(dif_x)
             travelFieldsY = units.fieldSteps * abs(dif_y)
             
-=======
-            # Knight Movement
->>>>>>> 00d382c410b568bd56ebc0b0997a1c7b13986c60
             if (dif_x == 2) and (dif_y == 1):
                 motorY.step((travelFieldsY / 2), 'cw', units.usDelay)
                 motorX.step(travelFieldsX, 'cw', units.usDelay)
@@ -67,7 +64,6 @@ class Motor_move:
             else: 
                 # Non-Knight Movement
                 if dif_x > 0:
-<<<<<<< HEAD
                     motorX.step(travelFieldsX, 'cw', units.usDelay)
 
                 elif dif_x < 0:
@@ -78,32 +74,6 @@ class Motor_move:
 
                 elif dif_y < 0:
                     motorY.step(travelFieldsY, 'ccw', units.usDelay)
-=======
-                    travelFields = units.fieldSteps * dif_x
-                    def motorStepXPos():
-                        motorX.step(travelFields, 'cw', units.usDelay)
-                    Thread(target = motorStepXPos).start()
-
-                elif dif_x < 0:
-                    travelFields = units.fieldSteps * dif_x * -1
-                    def motorStepXNeg():
-                        motorX.step(travelFields, 'ccw', units.usDelay)
-                    Thread(target = motorStepXNeg).start()
-                    motorX.step(travelFieldsX, 'ccw', units.usDelay)
-
-                if dif_y > 0:
-                    travelFields = units.fieldSteps * dif_y
-                    def motorStepYPos():
-                        motorY.step(travelFields, 'cw', units.usDelay)
-                    Thread(target = motorStepYPos).start()
-                    motorY.step(travelFieldsY, 'cw', units.usDelay)
-
-                elif dif_y < 0:
-                    travelFields = units.fieldSteps * dif_y * -1
-                    def motorStepYNeg():
-                        motorY.step(travelFields, 'ccw', units.usDelay)
-                    Thread(target = motorStepYNeg).start()
->>>>>>> 00d382c410b568bd56ebc0b0997a1c7b13986c60
 
         except KeyboardInterrupt:
             GPIO.output(motorX.EN, GPIO.HIGH)
