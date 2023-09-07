@@ -1,4 +1,4 @@
-from time import sleep
+import time
 from threading import Thread
 from motor import Motor
 from miscellaneous.units import Units
@@ -82,6 +82,8 @@ class Motor_move:
                     def motorStepNegY(): # Move in negative Y direction
                         motorY.step(travelFieldsY, 'ccw', units.usDelay)
                     Thread(target = motorStepNegY).start()
+
+                time.sleep((abs(dif_x) + abs(dif_y)) * 0.8)
 
         except KeyboardInterrupt:
             GPIO.output(motorX.EN, GPIO.HIGH)
