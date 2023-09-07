@@ -64,22 +64,22 @@ class Motor_move:
             else: 
                 # Non-Knight Movement
                 if dif_x > 0:
-                    def motorStepPosX():
+                    def motorStepPosX(): # Move in postive X direction
                         motorX.step(travelFieldsX, 'cw', units.usDelay)
                     Thread(target = motorStepPosX).start()
 
                 elif dif_x < 0:
-                    def motorStepNegX():
+                    def motorStepNegX(): # Move in negative X direction
                         motorX.step(travelFieldsX, 'ccw', units.usDelay)
                     Thread(target = motorStepNegX).start()
 
                 if dif_y > 0:
-                    def motorStepPosY():
+                    def motorStepPosY(): # Move in postive Y direction
                         motorY.step(travelFieldsY, 'cw', units.usDelay)
                     Thread(target = motorStepPosY).start()
 
                 elif dif_y < 0:
-                    def motorStepNegY():
+                    def motorStepNegY(): # Move in negative Y direction
                         motorY.step(travelFieldsY, 'ccw', units.usDelay)
                     Thread(target = motorStepNegY).start()
 
@@ -93,27 +93,4 @@ class Motor_move:
 
         Motor_move.move_motor_on_board(move_x, move_y, units)
 
-Motor_move.manual_movement()
-
-
-# def moveX():
-#     motorX.step((units.fieldSteps * 6), 'cw', units.usDelay)
-
-# def moveY():
-#     motorY.step((units.fieldSteps * 6), 'ccw', units.usDelay)
-
-# def moveXback():
-#     motorX.step((units.fieldSteps * 5), 'ccw', units.usDelay)
-
-# def moveYback():
-#     motorY.step((units.fieldSteps * 5), 'ccw', units.usDelay)
-
-# def move():
-#     Thread(target = moveX).start()
-#     Thread(target = moveY).start()
-
-# def moveback():
-#     Thread(target = moveXback).start()
-#     Thread(target = moveYback).start()
-# move()
-# moveback()
+# Motor_move.manual_movement()
