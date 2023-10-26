@@ -39,7 +39,7 @@ chesspiece = ChessPiece(0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0)
 magnet = Magnet()
 
 async def listen():
-    url = "wss://api.pawn-hub.de/host" if not parser.parse_args().local else "ws://127.0.0.1:3000/host"
+    url = "wss://api.chesse.koeni.dev/host" if not parser.parse_args().local else "ws://127.0.0.1:3000/host"
     connection_code = random.randint(1001, 9999)
 
     async with websockets.connect(url) as ws:
@@ -56,7 +56,7 @@ async def listen():
 
                 print("Your connection ID: " + str(connection_id) + 
                         "\nYour connection code: " + str(connection_code) + 
-                        "\nYour connection link: " + "https://pawn-hub.de/play/" + str(connection_id) + "-" + str(connection_code))
+                        "\nYour connection link: " + "https://chesse.koeni.dev/play/" + str(connection_id) + "-" + str(connection_code))
             
 
             # Verify or decline attendee request
