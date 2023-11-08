@@ -30,12 +30,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-l", "--local", default=False, action=argparse.BooleanOptionalAction, help="Use local server")
 parser.add_argument("--override-code", help="Override authentication code")
 
-play_against_ai = input("Do you want to play against the AI? ")
-if play_against_ai.lower() == "yes" or play_against_ai.lower() == "y":
-    depth = int(input("Choose a difficulty level: 1(easy), 2(medium), 3(hard) "))
+gamemode = input("Choose a gamemode: \n (1) Play against human on robot \n (2) Play against AI on robot \n (3) Play against AI on website \n")
+if gamemode == "2" or "3":
+    depth = int(input("Choose a difficulty level: \n (1) Easy \n (2) Medium \n (3) Hard \n"))
     board = chess.Board()
 
-visualise_board = input("Do you want a board visualisation in the console? ")
+visualise_board = input("Do you want a board visualisation in the console? \n (1) Yes \n (2) No \n")
 
 units = Units()
 chesspiece = ChessPiece(0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0)
@@ -77,55 +77,60 @@ async def listen():
                 sys.exit()
 
 
-            # Mirror move on physical board
-            if server_res["type"] == "receive-move":
-                try:
-                    # Output
-                    chesspiece.coordinate_converter_robot(server_res["from"], server_res["to"])
+            # Play against human on robot
+            if gamemode == "1":
+                if server_res["type"] == "receive-move":
+                    try:
+                        # Output
+                        chesspiece.coordinate_converter_robot(server_res["from"], server_res["to"])
 
-                    chesspiece.calculate_difference_current_from()
+                        chesspiece.calculate_difference_current_from()
 
-                    Motor_move.move_motor_on_board(chesspiece.difference_current_from[0], chesspiece.difference_current_from[1], units)
+                        Motor_move.move_motor_on_board(chesspiece.difference_current_from[0], chesspiece.difference_current_from[1], units)
 
-                    chesspiece.calculate_difference_from_to()
+                        chesspiece.calculate_difference_from_to()
 
-                    magnet.on()
+                        magnet.on()
 
-                    Motor_move.move_motor_on_board(chesspiece.difference_from_to[0], chesspiece.difference_from_to[1], units)
+                        Motor_move.move_motor_on_board(chesspiece.difference_from_to[0], chesspiece.difference_from_to[1], units)
 
-                    magnet.off()
+                        magnet.off()
 
-                    chesspiece.save_current_position()
+                        chesspiece.save_current_position()
 
-                    # Input
-                    if input() == "x":
-                        CaptureImage.capture_and_save_image('chess_ai/image1.jpg')
-                        print("Captured first image.")
+                        # Input
+                        if input() == "x":
+                            CaptureImage.capture_and_save_image('chess_ai/image1.jpg')
+                            print("Captured first image.")
 
-                    if input() == "x":
-                        CaptureImage.capture_and_save_image('chess_ai/image2.jpg')
-                        print("Captured second image.")
+                        if input() == "x":
+                            CaptureImage.capture_and_save_image('chess_ai/image2.jpg')
+                            print("Captured second image.")
 
-                    image_rec.find_moved_piece()
-                    
-                    if (image_rec.move_from != None) and (image_rec.move_to != None):
-                        await ws.send(json.dumps({"type": "send-move", "from": image_rec.move_from, "to": image_rec.move_to}))
-                    else:
-                        print("Move could not be detected.")
+                        image_rec.find_moved_piece()
+                        
+                        if (image_rec.move_from != None) and (image_rec.move_to != None):
+                            await ws.send(json.dumps({"type": "send-move", "from": image_rec.move_from, "to": image_rec.move_to}))
+                        else:
+                            print("Move could not be detected.")
 
-                except NameError:
-                    pass
+                    except NameError:
+                        pass
 
+            # Play against AI on robot
+            if gamemode == "2":
+                return None
+                # TODO
 
             # Play against AI on website
-            if play_against_ai.lower() == "yes" or play_against_ai.lower() == "y":
+            if gamemode == "3":
                 if server_res["type"] == "receive-move":
                     ChessAI.play_move(chesspiece, board, depth, server_res)
                     await ws.send(json.dumps({"type": "send-move", "from": chesspiece.ai_from, "to": chesspiece.ai_to}))
 
 
             # Visualise moves in console
-            if visualise_board.lower() == "yes" or visualise_board.lower() == "y":
+            if visualise_board == "1":
                 if (server_res["type"] == "matched") or (server_res["type"] == "receive-move"):
                     await ws.send(json.dumps({"type": "get-board"}))
                     fen = server_res["fen"]
