@@ -13,11 +13,14 @@ try:
     import RPi.GPIO as GPIO 
     from motor_move import Motor_move
     from magnet import Magnet
+    magnet = Magnet()
 except ModuleNotFoundError:
     pass
 
 # AI imports
 from chess_ai.chess_ai import ChessAI
+from chess_ai.image_recognition import ImageRecognition
+from chess_ai.capture_image import CaptureImage
 
 # Miscellaneous imports
 from miscellaneous.piece_coordinates import ChessPiece
@@ -36,7 +39,7 @@ visualise_board = input("Do you want a board visualisation in the console? ")
 
 units = Units()
 chesspiece = ChessPiece(0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0)
-magnet = Magnet()
+image_rec = ImageRecognition()
 
 async def listen():
     url = "wss://api.chesse.koeni.dev/host" if not parser.parse_args().local else "ws://127.0.0.1:3000/host"
@@ -77,6 +80,7 @@ async def listen():
             # Mirror move on physical board
             if server_res["type"] == "receive-move":
                 try:
+                    # Output
                     chesspiece.coordinate_converter_robot(server_res["from"], server_res["to"])
 
                     chesspiece.calculate_difference_current_from()
@@ -92,6 +96,22 @@ async def listen():
                     magnet.off()
 
                     chesspiece.save_current_position()
+
+                    # Input
+                    if input() == "x":
+                        CaptureImage.capture_and_save_image('chess_ai/image1.jpg')
+                        print("Captured first image.")
+
+                    if input() == "x":
+                        CaptureImage.capture_and_save_image('chess_ai/image2.jpg')
+                        print("Captured second image.")
+
+                    image_rec.find_moved_piece()
+                    
+                    if (image_rec.move_from != None) and (image_rec.move_to != None):
+                        await ws.send(json.dumps({"type": "send-move", "from": image_rec.move_from, "to": image_rec.move_to}))
+                    else:
+                        print("Move could not be detected.")
 
                 except NameError:
                     pass
