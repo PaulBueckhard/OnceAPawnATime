@@ -77,7 +77,7 @@ async def listen():
                 sys.exit()
 
 
-            # Play against human on robot
+            # 1. Play against human on robot
             if gamemode == "1":
                 if server_res["type"] == "receive-move":
                     try:
@@ -117,15 +117,36 @@ async def listen():
                     except NameError:
                         pass
 
-            # Play against AI on robot
+            # 2. Play against AI on robot
             if gamemode == "2":
-                return None
-                # TODO
+                try:
+                    if input() == "x":
+                        CaptureImage.capture_and_save_image('chess_ai/image1.jpg')
+                        print("Captured first image.")
 
-            # Play against AI on website
+                    if input() == "x":
+                        CaptureImage.capture_and_save_image('chess_ai/image2.jpg')
+                        print("Captured second image.")
+
+                    image_rec.find_moved_piece()
+                    
+                    if (image_rec.move_from != None) and (image_rec.move_to != None):
+                        await ws.send(json.dumps({"type": "send-move", "from": image_rec.move_from, "to": image_rec.move_to}))
+                    else:
+                        print("Move could not be detected.")
+
+                    ChessAI.play_move(chesspiece, board, depth, image_rec.move_from, image_rec.move_to)
+                    await ws.send(json.dumps({"type": "send-move", "from": chesspiece.ai_from, "to": chesspiece.ai_to}))
+
+                    
+                
+                except NameError:
+                    pass
+
+            # 2. Play against AI on website
             if gamemode == "3":
                 if server_res["type"] == "receive-move":
-                    ChessAI.play_move(chesspiece, board, depth, server_res)
+                    ChessAI.play_move(chesspiece, board, depth, server_res["from"], server_res["to"])
                     await ws.send(json.dumps({"type": "send-move", "from": chesspiece.ai_from, "to": chesspiece.ai_to}))
 
 
