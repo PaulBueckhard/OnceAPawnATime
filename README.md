@@ -1,9 +1,16 @@
-# Chess:E Board Client
-Chess:E is an internet-enabled, physical chess robot that allows remote players to connect and play chess together in a tangible, analog experience. The robot is equipped with an electromagnet that holds chess pieces from beneath the board and two  stepper motors that move the electromagnet across each of the two axes. The board client, which runs on a Raspberry Pi 400, serves as a bridge between the robot's motors and the backend server of our website, [https://pawn-hub.de](https://pawn-hub.de).
 
-This documentation describes the board client and how it enables players to play chess remotely. 
+# Chess:E Board Client
+
+Chess:E is an internet-enabled, physical chess robot that allows remote players to connect and play chess together in a tangible, analog experience. The robot is equipped with an electromagnet that holds chess pieces from beneath the board and two stepper motors that move the electromagnet across each of the two axes. The board client, which runs on a Raspberry Pi 400, serves as a bridge between the robot's motors and the backend server of our website, [https://chesse.koeni.dev](https://chesse.koeni.dev).
+
+  
+
+This documentation describes the board client and how it enables players to play chess remotely.
+
+  
 
 ## Setup
+
 Clone the repository
 
 	$ git clone https://github.com/PawnHubChess/client-board
@@ -12,29 +19,43 @@ Install dependencies
 
 	$ pip install -r requirements.txt
 
-## Play against AI
-- Run `main/client.py` 
-- Answer with `yes`, when asked whether you want to play against the AI
-- Choose a difficulty level (higher difficulties results in longer response times)
+## Gamemode 1: Play against human on robot
+This gamemode assumes you are playing on the robot.
+- Run `main/client.py`
+- Answer with `1` to choose the first gamemode
+- Answer with `1` if you want a textual board visualisation in the console, answer with `2`, if you don't 
+
+Go to [https://chesse.koeni.dev/play](https://chesse.koeni.dev/play) and enter your connection code and ID **OR** click on the connection link provided in the console.
+
+Every move your opponent (white player) makes on the website is reflected on the robot through motor movements.
+Every move you (black player) make is captured by the camera and reflected on the website.
+
+## Gamemode 2: Play against AI on robot
+This gamemode assumes you are playing on the robot.
+- Run `main/client.py`
+- Answer with `2` to choose the second gamemode
+- Choose a difficulty level (higher difficulties result in longer response times)
 	- Answer with `1`, for easy difficulty
 	- Answer with `2`, for medium difficulty
 	- Answer with `3`, for hard difficulty
-- Answer with `yes` or `no`, whether you want board visualisation in the console
 
-Go to [https://pawn-hub.de/play](https://pawn-hub.de/play) and enter your connection code and ID **OR** click on the connection link provided in the console.
-**Disclaimer:** Trying to connect to the game will usually fail on the first try, but succeed after retrying.
+Every move you (white player) make is captured by the camera and sent to the AI.
+Every move the AI (black player) makes is reflected on the robot through motor movements.
 
-You can now play chess against the AI. The program will end when one of you wins or when you leave the game.
+##  Gamemode 3: Play against AI on website
+This gamemode assumes you are playing on the website.
+- Run `main/client.py`
+- Answer with `3` to choose the third gamemode
+- Choose a difficulty level (higher difficulties result in longer response times)
+	- Answer with `1`, for easy difficulty
+	- Answer with `2`, for medium difficulty
+	- Answer with `3`, for hard difficulty
+- Answer with `1` if you want a textual board visualisation in the console, answer with `2`, if you don't 
 
-## Play against opponent on robot
-- Run `main/client.py` 
-- Answer with `no`, when asked whether you want to play against the AI
-- Answer with `yes` or `no`, whether you want board visualisation in the console
+Go to [https://chesse.koeni.dev/play](https://chesse.koeni.dev/play) and enter your connection code and ID **OR** click on the connection link provided in the console.
 
-Go to [https://pawn-hub.de/play](https://pawn-hub.de/play) and enter your connection code and ID **OR** click on the connection link provided in the console.
-**Disclaimer:** Trying to connect to the game will usually fail on the first try, but succeed after retrying.
-
-You can now play chess against an opponent on the chess robot. Every move you make on the website will be mirrored on the physical board.
+Every move you (white player) make is captured by the website and sent to the AI.
+Every move the AI (black player) makes is reflected on the website.
 
 ## Architecture
 
@@ -52,16 +73,26 @@ It searches through the game tree to determine the best move for the current pla
 
 It first checks whether the `player_move` is legal and pushes it onto the board. Then, it uses the `minimax` function to find the best move and adds the one with the highest score to the board.
 
-### Motors
-The `motor` and `motor_move` modules host classes which are responsible for the general movement of the robot's motors. The `motor` module sets up the connection between Raspberry Pi and motors by configuring their pins. The `motor_move` inherits from the `motor` and hosts all functions that make the motors move with the parameters given on call.
+### Image Capturing & Recognition
+The `capture_image` module is designed for image capturing within the robot. The script's primary function is to capture images of the chessboard and save them for further processing. When triggered, it initiates the camera, captures a frame, and processes it to ensure it's appropriately cropped and focused on the chessboard. The captured images are then saved as `image1.jpg` and `image2.jpg`.
+
+The `image_recognition` module is responsible for detecting chess piece movements on the board through image analysis, using OpenCV. It analyzes two grayscale images, taken before and after a move, to identify changes on the chessboard. The script highlights these changes using thresholding and then finds contours to pinpoint the areas of movement. It calculates the central points of these contours to determine the exact starting and ending positions of the moved piece on the chessboard, assigning these positions to `move_from` and `move_to` attributes.
+
+### Motors & Magnet
+The `motor`, `motor_move`, `motor_off` and `magnet` modules host classes which are responsible for the general movement of the robot's motors and magnet. The `motor` module sets up the connection between Raspberry Pi and motors by configuring their pins. The `motor_move` inherits from the `motor` and hosts all functions that make the motors move with the parameters given on call. The `magnet` module hosts the functions to set up the electromagnet, and turn it on and off.
 
 ### Piece Coordinates
-The `piece_coordinates` module hosts the `ChessPiece` class which is responsible for the translation of the different move coordinate formats across all used applications. 
+The `piece_coordinates` module hosts the `ChessPiece` class which is responsible for the translation of the different move coordinate formats across all used applications.
+
 - Converts backend suitable coordinates into motor suitable coordinates
-	- Converts JSON string dictionaries into integers
-	- Calculates the numerical difference in X- and Y-coordinate for each move and returns it to the motors
+
+- Converts JSON string dictionaries into integers
+
+- Calculates the numerical difference in X- and Y-coordinate for each move and returns it to the motors
+
 - Converts backend suitable coordinates into AI suitable coordinates and vice versa
-	- Converts JSON string dictionaries into algebraic notation and vice versa
+
+- Converts JSON string dictionaries into algebraic notation and vice versa
 
 Additionally it hosts a `fen_visualiser` function which prints the current board state, in the form of a 2D array, into the console.
 

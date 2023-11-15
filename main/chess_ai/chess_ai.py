@@ -42,8 +42,8 @@ class ChessAI:
                     break
             return min_eval
 
-    def play_move(chesspiece, board, depth, server_res):
-        chesspiece.coordinate_converter_ai(server_res["from"], server_res["to"])
+    def play_move(chesspiece, board, depth, move_from, move_to):
+        chesspiece.coordinate_converter_ai(move_from, move_to)
         player_move = chesspiece.player_move
         
         move = None
