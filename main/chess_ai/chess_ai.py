@@ -17,7 +17,12 @@ class ChessAI:
 
     def minimax(board, depth, alpha, beta, maximizing_player):
         if depth == 0 or board.is_game_over():
-            return ChessAI.evaluate_board(board)
+            if board.is_checkmate():
+                return float('inf') if maximizing_player else float('-inf')
+            elif board.is_stalemate() or board.is_insufficient_material():
+                return 0
+            else:
+                return ChessAI.evaluate_board(board)
 
         if maximizing_player:
             max_eval = float('-inf')
